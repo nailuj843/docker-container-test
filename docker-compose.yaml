@@ -25,6 +25,7 @@ services:
       - app-network
     environment:
       DB_CONNECTION_STRING: postgres://postgres:docker@db:5432/dockerdb
+      WAIT_HOSTS: db:5432
     depends_on:
       - db
 
