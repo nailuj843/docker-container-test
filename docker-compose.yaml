@@ -1,0 +1,53 @@
+# The Docker Config version. Do not change.
+version: "3.1"
+services: 
+  frontend:
+    image: nailuj843/frontend
+    container_name: frontend
+    # volumes:
+    #  - "./client:/app"
+    ports: 
+      - "3000:3000"
+    networks:
+      - app-network 
+    depends_on:
+      - server
+
+  server: 
+    image: nailuj843/backend
+    container_name: server
+    #volumes: 
+    #  - "./server:/app"
+    #- ./db:/docker-entrypoint-initdb.d/
+    ports: 
+      - "3001:3001"
+    networks:
+      - app-network
+    environment:
+      DB_CONNECTION_STRING: postgres://postgres:docker@db:5432/dockerdb
+    depends_on:
+      - db
+
+  db:
+    build: 
+        context: ./db
+        dockerfile: Dockerfile
+    container_name: db
+    ports: 
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+
+    #volumes:
+     #- ./my_data_directory:/var/lib/postgresql/data
+     #- db-data:/var/lib/postgresql/data:delegated
+    networks:
+      - app-network
+
+#volumes:
+#    db-data:
+
+networks:
+  app-network:
+    driver: bridge
